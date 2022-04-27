@@ -7,7 +7,8 @@ public class Main {
         System.out.println(pibo(T));
     }
     public static int pibo(int t) {
-        if (t < 2) return t;
+        if (t < 2) 
+            return t;
         else 
             return pibo(t-1) + pibo(t-2);
     }
