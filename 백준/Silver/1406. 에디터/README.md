@@ -12,17 +12,17 @@
 
 ### 고찰
 마지막 출력 부분을 
-'''java
+```java
 while(!leftstack.empty()) rightstack.push(leftstack.pop());
 while(!rightstack.empty()) System.out.print(rightstack.pop());
-'''
+```
 라고 작성하였더니 시간 초과가 남. 이에 다음과 같이 수정.
-'''java
+```java
 StringBuilder sb = new StringBuilder(); 
 while(!leftstack.isEmpty()){ rightstack.push(leftstack.pop()); }
 while(!rightstack.isEmpty()){ sb.append(rightstack.pop()); } 
 System.out.println(sb);
-'''
+```
 
 ### 문제 설명
 
