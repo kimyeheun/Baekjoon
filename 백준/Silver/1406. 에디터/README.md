@@ -10,6 +10,20 @@
 
 자료 구조(data_structures), 연결 리스트(linked_list), 스택(stack)
 
+### 고찰
+마지막 출력 부분을 
+'''java
+while(!leftstack.empty()) rightstack.push(leftstack.pop());
+while(!rightstack.empty()) System.out.print(rightstack.pop());
+'''
+라고 작성하였더니 시간 초과가 남. 이에 다음과 같이 수정.
+'''java
+StringBuilder sb = new StringBuilder(); 
+while(!leftstack.isEmpty()){ rightstack.push(leftstack.pop()); }
+while(!rightstack.isEmpty()){ sb.append(rightstack.pop()); } 
+System.out.println(sb);
+'''
+
 ### 문제 설명
 
 <p>한 줄로 된 간단한 에디터를 구현하려고 한다. 이 편집기는 영어 소문자만을 기록할 수 있는 편집기로, 최대 600,000글자까지 입력할 수 있다.</p>
