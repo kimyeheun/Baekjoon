@@ -1,91 +1,31 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.IOException;
 import java.util.ArrayDeque;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main (String[] args) throws Exception {
+        BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+        ArrayDeque<Integer> deque = new ArrayDeque<>();
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        ArrayDeque<Integer> dq = new ArrayDeque<Integer>();
-        StringBuilder sb = new StringBuilder();
-
-        int N = Integer.parseInt(br.readLine());
-
-        for (int i = 0; i < N; i++) {
-
-            String[] s = br.readLine().split(" ");
-
-            // 첫 번째 단어에 대한 switch-case
-            switch (s[0]) {
-
-                case "push_front": {
-                    dq.addFirst(Integer.parseInt(s[1]));
-                    break;
-                }
-
-                case "push_back": {
-                    dq.addLast(Integer.parseInt(s[1]));
-                    break;
-                }
-
-                case "pop_front": {
-                    if (dq.isEmpty()) {
-                        sb.append(-1).append('\n');
-                    }
-                    else {
-                        sb.append(dq.pollFirst()).append('\n');
-                    }
-                    break;
-                }
-
-                case "pop_back": {
-                    if (dq.isEmpty()) {
-                        sb.append(-1).append('\n');
-                    }
-                    else {
-                        sb.append(dq.pollLast()).append('\n');
-                    }
-                    break;
-                }
-
-                case "size": {
-                    sb.append(dq.size()).append('\n');
-                    break;
-                }
-
-                case "empty": {
-                    if (dq.isEmpty()) {
-                        sb.append(1).append('\n');
-                    }
-                    else {
-                        sb.append(0).append('\n');
-                    }
-                    break;
-                }
-
-                case "front": {
-                    if (dq.isEmpty()) {
-                        sb.append(-1).append('\n');
-                    }
-                    else {
-                        sb.append(dq.peekFirst()).append('\n');
-                    }
-                    break;
-                }
-
-                case "back": {
-                    if (dq.isEmpty()) {
-                        sb.append(-1).append('\n');
-                    }
-                    else {
-                        sb.append(dq.peekLast()).append('\n');
-                    }
-                    break;
-                }
-            }
+        int test = Integer.parseInt(sc.readLine());
+        for (int i = 0; i < test; i++) {
+            String[] word = sc.readLine().split(" ");
+            if (word[0].equals("push_front"))
+                deque.addFirst(Integer.parseInt(word[1]));
+            else if (word[0].equals("push_back"))
+                deque.addLast(Integer.parseInt(word[1]));
+            else if (word[0].equals("pop_front"))
+                System.out.println((deque.isEmpty()) ? -1 : deque.pollFirst());
+            else if (word[0].equals("pop_back"))
+                System.out.println((deque.isEmpty()) ? -1 : deque.pollLast());
+            else if (word[0].equals("size"))
+                System.out.println(deque.size());
+            else if (word[0].equals("empty"))
+                System.out.println((deque.isEmpty()) ? 1 : 0);
+            else if (word[0].equals("front"))
+                System.out.println((deque.isEmpty()) ? -1 : deque.peekFirst());
+            else if (word[0].equals("back"))
+                System.out.println((deque.isEmpty()) ? -1 : deque.peekLast());
         }
-        System.out.println(sb);
     }
 }
