@@ -8,9 +8,9 @@ public class Main {
         int first = sc.nextInt();
         int last = sc.nextInt();
         boolean[] list = new boolean[last+1];
-        Arrays.fill(list, true);   //모든 요소를 true로 지정.
+        Arrays.fill(list, true);   
 
-        for(int i = 2; i<=last; i++) {  //last까지의 소수를 찾자
+        for(int i = 2; i<=last; i++) { 
             if (list[i]) {
                 for (int j = 2; j * i <= last; j++)
                     list[j*i] = false;
