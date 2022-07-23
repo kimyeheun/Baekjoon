@@ -1,1 +1,1 @@
-# 🌟 Baekjoon
+# 🌟 Baek Joon
