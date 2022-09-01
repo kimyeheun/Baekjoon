@@ -32,9 +32,7 @@ class Solution {
                         reserve[u] = -1;
                         break;
                     } 
-                }
-                
-                
+                }  
             }  
         }
         
@@ -42,8 +40,7 @@ class Solution {
             if(student[i] == 1)
                 answer++;
         }
-        
-        
+    
         return answer;
     }
 }
