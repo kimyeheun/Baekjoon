@@ -7,19 +7,15 @@ class Solution {
         Arrays.sort(participant);
         Arrays.sort(completion);
         
-        int check = 0;
+        int i;
         
-        for(int i = 0; i < completion.length; i++) {
+        for(i = 0; i < completion.length; i++) {
             if(!completion[i].equals(participant[i])) {
                 answer = participant[i];
                 break;
             }
-            check = i;
         }
-        
-        if(check == completion.length - 1) {
-            answer = participant[participant.length-1];
-        }
+        answer = participant[i];
         return answer;
     }
 }
