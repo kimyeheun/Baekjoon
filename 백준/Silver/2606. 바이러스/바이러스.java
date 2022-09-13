@@ -16,31 +16,25 @@ public class Main {
             link[x][y] = link[y][x] = 1;
         }
         visit = new boolean[N+1];
+        int count = 0;
 
-        System.out.println(bfs());
-    }
+        dfs(1);
 
-    public static int bfs() {
-        Queue<Integer> queue = new LinkedList<>();
-        int ans = 0;
-
-        queue.add(1);
-        visit[1] = true;
-
-        while(!queue.isEmpty()) {
-            int now = queue.poll();
-            for(int i = 1; i <= N; i++) {
-                if(!visit[i] && link[now][i] == 1) {
-                    queue.add(i);
-                    visit[i] = true;
-                }
-            }
-        }
         for(int i = 1; i <= N; i++) {
-            if(visit[i]) {
-                ans++;
+            if(visit[i])
+                count++;
+        }
+        System.out.println(count - 1);
+    }
+
+    public static void dfs(int now) {
+        for(int i = 1; i <= N; i++) {
+            if(!visit[i] && link[now][i] == 1) {
+                visit[i] = true;
+                dfs(i);
             }
         }
-        return ans - 1;
     }
+
 }
+
