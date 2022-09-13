@@ -1,65 +1,61 @@
-import java.io.*;
 import java.util.*;
 
 public class Main {
-  static int[][] check; 
-  static boolean[] checked;   
-  static int n; 
-  static int m; 
-  static int start; 
-  
-  public static void main(String[] args) throws IOException {
-  Scanner sc = new Scanner(System.in);
-  n = sc.nextInt();
-  m = sc.nextInt();
-  start = sc.nextInt();
-  
-  check = new int[1001][1001];
-  checked = new boolean[1001];
-  
-  
-  for(int i = 0; i < m; i++) {
-    int x = sc.nextInt();
-    int y = sc.nextInt();
-    
-    check[x][y] = check[y][x] = 1;
-  }
-  
-  dfs(start); 
-  
-  checked = new boolean[1001]; 
-  
-  System.out.println(); 
-  bfs(); 
-  }
-  
-  public static void dfs(int i) {
-    checked[i] = true;
-    System.out.print(i + " ");
-    
-    for(int j = 1; j <= n; j++) {
-      if(check[i][j] == 1 && checked[j] == false) {
-        dfs(j);
-      }
-    }
-  }
-  
-  public static void bfs() {
-    Queue<Integer> queue = new LinkedList<Integer>();
-    queue.offer(start); 
-    checked[start] = true;
-    System.out.print(start + " ");
-    
-    while(!queue.isEmpty()) {
-      int temp = queue.poll();
-      
-      for(int j = 1; j <= n; j++) {
-        if(check[temp][j] == 1 && checked[j] == false) {
-          queue.offer(j);
-          checked[j] = true;
-          System.out.print(j + " ");
+    static int N;
+    static int[][] dfsb= new int[1001][1001]; //간선 배열
+    static boolean[] visit; //노드 방문 확인
+
+    static Queue<Integer> queue = new LinkedList<>();
+
+    public static void dfs(int v) {
+        System.out.print(v+" ");
+        visit[v] = true;
+
+        int i;
+        for(i = 1; i <=N; i++) {
+            if (!visit[i] && dfsb[v][i] == 1) {
+                dfs(i);
+            }
         }
-      }
     }
-  }
+
+    public static void bfs(int v){
+        queue.add(v);
+
+        while(!queue.isEmpty()) {
+            int now = queue.poll();
+            visit[now] = true;
+            System.out.print(now + " ");
+
+            for(int i = 1; i <= N; i++) {
+                if(!visit[i] && dfsb[now][i] == 1) {
+                    queue.add(i);
+                    visit[i] = true;
+                }
+            }
+        }
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        N= sc.nextInt();
+        int M = sc.nextInt();
+        int V = sc.nextInt();
+
+        visit = new boolean[N+1];
+
+        for(int i = 1; i <= M; i++) {
+            int x = sc.nextInt();
+            int y = sc.nextInt();
+            dfsb[x][y] = dfsb[y][x] = 1; //양방향 간선 연결
+        }
+
+        dfs(V);
+
+        System.out.println();
+        visit = new boolean[N+1];
+
+        bfs(V);
+    }
 }
+
