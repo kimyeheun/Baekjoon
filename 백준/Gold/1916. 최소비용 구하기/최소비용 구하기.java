@@ -61,14 +61,16 @@ public class Main {
 
             if(!visit[now.dest])
                 visit[now.dest] = true;
-            if(now.dest == end) {
-                return;
-            }
+            
             for(Node next : go[now.dest]) {
                 if(!visit[next.dest] && Bus[next.dest] > next.cost + now.cost) {
                     Bus[next.dest] = next.cost + now.cost;
                     pq.add(new Node(next.dest, Bus[next.dest]));
                 }
+            }
+            
+            if(now.dest == end) {
+                return;
             }
         }
     }
