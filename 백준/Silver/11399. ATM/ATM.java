@@ -1,25 +1,28 @@
+import java.io.*;
 import java.util.*;
 
+// 그리디
 public class Main {
-    public static void main(String[] args){
-        Scanner sc = new Scanner(System.in);
-
-        int n = sc.nextInt(); 
-        int[] p = new int[n];
-        int[] r = new int[n];
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         
-        for(int i=0; i<n; i++) {
-            p[i] = sc.nextInt();
+        int N = Integer.parseInt(br.readLine());
+        int[] p = new int[N];
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        
+        for (int n = 0; n < N; n++) {
+            p[n] = Integer.parseInt(st.nextToken());           
         }
         
         Arrays.sort(p);
-        r[0] = p[0];
-        int sum = r[0];
-        
-        for(int i=1; i<n; i++){
-            r[i] = r[i-1] + p[i];
-            sum += r[i];
+
+        int result = 0;
+        int sum = 0;
+        for (int n = 0; n < N; n++) {
+            sum += p[n];
+            result += sum;            
         }
-        System.out.println(sum);
+        
+        System.out.println(result);
     }
 }
