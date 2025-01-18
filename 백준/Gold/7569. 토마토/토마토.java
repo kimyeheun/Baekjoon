@@ -1,69 +1,85 @@
+import java.io.*;
 import java.util.*;
 
+
 public class Main {
-    static int N, M, H;
-    static Queue<int[]> tomato = new LinkedList<>();
-    static int[] move_x = {-1, 1, 0, 0, 0, 0};
-    static int[] move_y = {0, 0, -1, 1, 0, 0};
-    static int[] move_z = {0, 0, 0, 0, -1, 1};
+    static int[][] move = {{1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}};
 
-    public static void main (String[] args) {
-        Scanner sc = new Scanner(System.in);
+    static class Tomato {
+        int m;
+        int n;
+        int h;
 
-        M = sc.nextInt();
-        N = sc.nextInt();
-        H = sc.nextInt();
+        public Tomato(int h, int n, int m) {
+            this.h = h;
+            this.n = n;
+            this.m = m;
+        }
+    }
 
-        int[][][] boxes = new int[H][N][M];
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int M = Integer.parseInt(st.nextToken());
+        int N = Integer.parseInt(st.nextToken());
+        int H = Integer.parseInt(st.nextToken());
+
+        int[][][] box = new int[H][N][M];
+        boolean[][][] visit = new boolean[H][N][M];
+
+        Queue<Tomato> queue = new LinkedList<>();
 
         for (int h = 0; h < H; h++) {
             for (int n = 0; n < N; n++) {
+                st = new StringTokenizer(br.readLine());
                 for (int m = 0; m < M; m++) {
-                    boxes[h][n][m] = sc.nextInt();
-                    if(boxes[h][n][m] == 1) {
-                        tomato.add(new int[] {h, n, m});
+                    box[h][n][m] = Integer.parseInt(st.nextToken());
+                    if (box[h][n][m] == -1) visit[h][n][m] = true;
+                    else if (box[h][n][m] == 1) {
+                        queue.add(new Tomato(h, n, m));
+                        visit[h][n][m] = true;
+                    }
+                    else if (box[h][n][m] == -1)
+                        visit[h][n][m] = true;
+                }
+            }
+        }
+
+        int day = 0;
+        while(!queue.isEmpty()) {
+            int per_day = queue.size();
+            for (int i = 0; i < per_day; i++) {
+                Tomato now = queue.remove();
+                int nowh = now.h;
+                int nown = now.n;
+                int nowm = now.m;
+
+                for (int[] m : move) {
+                    int nexth = nowh + m[0];
+                    int nextn = nown + m[1];
+                    int nextm = nowm + m[2];
+
+                    if (nexth >= H || nexth < 0 || nextn >= N || nextn < 0 || nextm >= M || nextm < 0) continue;
+
+                    if (box[nexth][nextn][nextm] == -1) continue;
+                    else if (box[nexth][nextn][nextm] == 0 && !visit[nexth][nextn][nextm]) {
+                        visit[nexth][nextn][nextm] = true;
+                        queue.add(new Tomato(nexth, nextn, nextm));
                     }
                 }
             }
+            day++;
         }
 
-        System.out.println(bfs(boxes));
-    }
-
-    public static int bfs(int[][][] boxes) {
-        while(!tomato.isEmpty()) {
-            int[] buf = tomato.poll();
-            int x = buf[2]; //m
-            int y = buf[1]; //n
-            int z = buf[0]; //h
-
-            for(int i = 0; i < 6; i++) {
-                int next_x = x + move_x[i];
-                int next_y = y + move_y[i];
-                int next_h = z + move_z[i];
-                if(next_x < 0 | next_y < 0 | next_h < 0 | next_x >= M | next_y >= N | next_h >= H)
-                    continue;
-                if(boxes[next_h][next_y][next_x] == 0) {
-                    boxes[next_h][next_y][next_x] = boxes[z][y][x] + 1;
-                    tomato.add(new int[] {next_h, next_y, next_x});
-                }
-            }
-        }
-
-        int ans = Integer.MIN_VALUE;
-
-        for (int h = 0; h < H; h++) {
+        int result = day-1;
+        for(int h = 0; h < H; h++) {
             for (int n = 0; n < N; n++) {
                 for (int m = 0; m < M; m++) {
-                    if(boxes[h][n][m] == 0)
-                         return -1;
-                    ans = Math.max(ans, boxes[h][n][m]);
+                    if(!visit[h][n][m]) result = -1;
                 }
             }
         }
-        if(ans == 1)
-            return 0;
-        else
-            return ans -1;
+        System.out.println(result);
     }
 }
