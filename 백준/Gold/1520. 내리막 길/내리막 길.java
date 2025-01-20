@@ -52,16 +52,12 @@ public class Main {
 			next_n = n + mo[0];
 			next_m = m + mo[1];
 			
-    		int[] XY = {next_n, next_m};
-
     		// 범위 체크
     		if(next_n >= N || next_m >= M || next_n < 0 || next_m < 0)
     			continue;
     	
-    		
     		// 높이 체크 
     		if(map[next_n][next_m] >= map[n][m]) {
-    			dp[next_n][next_m] = -1;
     			continue;
     		}
 
