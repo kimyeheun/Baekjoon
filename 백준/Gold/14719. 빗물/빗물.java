@@ -1,36 +1,40 @@
 import java.io.*;
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
+
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int h = sc.nextInt();
-        int w = sc.nextInt();
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
 
-        Integer[] place = new Integer[w+1];
-
-        for(int i = 0; i < w; i++) {
-            place[i] = sc.nextInt();
+        int[] rain = new int[M];
+        st = new StringTokenizer(br.readLine());
+        for(int m = 0; m < M; m++) {
+            rain[m] = Integer.parseInt(st.nextToken());
         }
-        int rain = 0;
-        for(int u = 1; u < place.length-2; u++) {
-            int left_max = 0;
-            int right_max = 0;
-            for(int y = 0; y < u; y++) {
-                if(left_max < place[y])
-                    left_max = place[y];
-            }
-            for(int e = u+1; e < place.length-1; e++) {
-                if(right_max < place[e])
-                    right_max = place[e];
-            }
-            int min = Math.min(left_max, right_max);
-
-            if(place[u] < min)
-                rain += min - place[u];
+        
+        int result = 0;
+        for(int n = 1; n <= N; n++) {
+        	List<Integer> idxs = new ArrayList<>();
+        	for(int m = 0; m < M; m++) {
+        		if (rain[m] >= n) idxs.add(m);
+        	}
+    		
+        	if (idxs.isEmpty()) continue;
+        	
+        	int s = idxs.remove(0);
+        	for(int e : idxs) {
+        		for(int i = s + 1; i < e; i++) {
+        			result++;
+        		}
+        		s = e;
+        	}
         }
-        System.out.println(rain);
-    }
+        
+        System.out.println(result);
+	}
 }
+
