@@ -3,14 +3,17 @@ import java.util.*;
 
 
 public class Main {
-    static int max_result = Integer.MIN_VALUE;
-    static int min_result = Integer.MAX_VALUE;
+    static int N;
+    
     static int[] nums;
     static int[] calc;
-    static int N;
+    
+    static int max_result = Integer.MIN_VALUE;
+    static int min_result = Integer.MAX_VALUE;
 
-    static void backtracking(int now, int cnt) { //지금까지 계산 된 값 = now, 지금까지 사용된 숫자 개수 = cnt
-        if (cnt == N -  1 || Arrays.stream(nums).sum() == 0) {
+    //지금까지 계산 된 값 = now / 지금까지 사용된 숫자 개수 = cnt
+    static void backtracking(int now, int cnt) { 
+        if (cnt == N -  1) {
             max_result = Math.max(max_result, now);
             min_result = Math.min(min_result, now);
             return;
@@ -26,7 +29,9 @@ public class Main {
                     else now /= nums[cnt+1];
                 }
                 cnt++;
+                
                 backtracking(now, cnt);
+                
                 cnt--;
                 if (i == 0) now -= nums[cnt+1];
                 else if(i==1) now += nums[cnt+1];
