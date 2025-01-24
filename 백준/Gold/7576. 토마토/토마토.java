@@ -1,87 +1,76 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.Queue;
-import java.util.StringTokenizer;
-
+import java.io.*;
+import java.util.*;
 
 
 public class Main {
-    static int N, M;
-    static Queue<Tomato> ripe = new ArrayDeque<>();
-    static int[][] map;
-    static int[] mx = {-1, 1, 0, 0};
-    static int[] my = {0, 0, -1, 1};
+    static class XY{
+        int n;
+        int m;
+        int day;
 
-    public static void main(String[] args) throws IOException {
+        XY(int n, int m, int day) {
+            this.n = n;
+            this.m = m;
+            this.day = day;
+        }
+    }
+
+    static int[][] move = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        M = Integer.parseInt(st.nextToken());
-        N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+        int N = Integer.parseInt(st.nextToken());
+        int[][] box = new int[N][M];
+        boolean[][] visit = new boolean[N][M];
 
-        map = new int[N][M];
-
-        for (int n = 0; n < N; n++) {
+        int x = -1, y = -1;
+        for(int n = 0; n < N; n++) {
             st = new StringTokenizer(br.readLine());
-            for (int m = 0; m < M; m++) {
-                map[n][m] = Integer.parseInt(st.nextToken());
-                if(map[n][m] == 1) {
-                    ripe.add(new Tomato(n, m));
-                }
-
+            for(int m = 0; m < M; m++) {
+                box[n][m] = Integer.parseInt(st.nextToken());
             }
         }
 
-        bfs();
-        System.out.println(check());
-    }
+        Queue<XY> queue = new LinkedList<>();
 
-    private static int check() {
-        int max = 0;
-        for (int n = 0; n < N; n++) {
+        for(int n = 0; n < N; n++) {
             for (int m = 0; m < M; m++) {
-                if(map[n][m] == 0)
-                    return -1;
-                max = Math.max(max, map[n][m]);
-            }
-        }
-        if(max == 1)
-            return 0;
-        return max - 1;
-    }
-
-
-    public static void bfs() {
-        while(!ripe.isEmpty()) {
-            Tomato now = ripe.poll();
-            int x = now.x;
-            int y = now.y;
-
-            for (int i = 0; i < 4; i++) {
-                int nx = x + mx[i];
-                int ny = y + my[i];
-
-                if(nx < 0 | ny < 0 | nx >= N | ny >= M)
-                    continue;
-
-                if(map[nx][ny] == 0) {
-                    map[nx][ny] = map[x][y] +1;
-                    ripe.add(new Tomato(nx, ny));
+                if (box[n][m] == 1) {
+                    queue.add(new XY(n, m, 0));
+                    visit[n][m] = true;
                 }
             }
         }
-    }
 
+        while (!queue.isEmpty()) {
+            XY now = queue.remove();
 
-    static class Tomato {
-        int x;
-        int y;
+            for (int[] mm : move) {
+                int next_n = now.n + mm[0];
+                int next_m = now.m + mm[1];
 
-        public Tomato(int x, int y) {
-            this.x = x;
-            this.y = y;
+                if (next_n >= N || next_n < 0 || next_m >= M || next_m < 0) continue;
+                if (visit[next_n][next_m]) continue;
+                if (box[next_n][next_m] >= 0) {
+                    queue.add(new XY(next_n, next_m, ++now.day));
+                    box[next_n][next_m] = box[now.n][now.m] + 1;
+                    visit[next_n][next_m] = true;
+                }
+            }
         }
+
+        int result = 0;
+        for(int n = 0; n < N; n++) {
+            for (int m = 0; m < M; m++) {
+                if (box[n][m] == 0) {
+                    System.out.println(-1);
+                    return;
+                }
+                result = Math.max(result, box[n][m]);
+            }
+        }
+        System.out.println(result - 1);
     }
 }
