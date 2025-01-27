@@ -1,24 +1,23 @@
-import java.util.*;
+import java.io.*;
+
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int T= Integer.parseInt(br.readLine());
 
-        Integer[] dp = new Integer[12];
-
-        dp[0] = 1;
-        dp[1] = 2;
-        dp[2] = 4;
-
-        for(int i = 3; i < 11; i++) {
-            dp[i] = dp[i-1] + dp[i-2] + dp[i-3];
-        }
-
-        int test = sc.nextInt();
-        
-        for(int o = 0; o < test; o++) {
-            int t = sc.nextInt();
-            System.out.println(dp[t-1]);
+        for(int t = 0; t < T; t++) {
+            int N = Integer.parseInt(br.readLine());
+            int[] dp = new int[N+1];
+            dp[0] = 1;
+            if (N >= 1) dp[1] = 1;
+            if (N >= 2) {
+                dp[2] = 2;
+                for(int i = 3; i <= N; i++) {
+                    dp[i] = dp[i-1] + dp[i-2] + dp[i-3];
+                }
+            }
+            System.out.println(dp[N]);
         }
     }
 }
