@@ -1,36 +1,33 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
-
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
+        
         int N = Integer.parseInt(br.readLine());
-        int[] A = new int[N];
-        int[] B = new int[N];
-
-        String buf = br.readLine();
-        StringTokenizer st = new StringTokenizer(buf);
-        for (int j = 0; j < N; j++) {
-            A[j] = Integer.parseInt(st.nextToken());
+        int[] n1 = new int[N];
+        int[] n2 = new int[N];
+        
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        for (int n= 0; n < N; n++){
+            n1[n] = Integer.parseInt(st.nextToken());
         }
-        buf = br.readLine();
-        st = new StringTokenizer(buf);
-        for (int j = 0; j < N; j++) {
-            B[j] = Integer.parseInt(st.nextToken());
+        st = new StringTokenizer(br.readLine());
+        for (int n= 0; n < N; n++){
+            n2[n] = Integer.parseInt(st.nextToken());
         }
-
-        Arrays.sort(A);
-        Arrays.sort(B);
-
-        int sum = 0;
-        for (int i = 0; i < N; i++) {
-            sum += A[i] * B[N-1-i];
+        
+        Arrays.sort(n1);
+        Arrays.sort(n2);
+        
+        int result =0;
+        for (int i =0; i <N; i++){
+            result += (n1[i] * n2[N-1-i]);
         }
-
-        System.out.println(sum);
+        
+        System.out.println(result);
     }
-}
+}    
+            
+            
