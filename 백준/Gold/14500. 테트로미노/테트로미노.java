@@ -18,33 +18,20 @@ public class Main {
         int max = 0;
         int rowBlock;
         int colBlock;
+        int[] round = {0, 1, 2, 4, 5, 6};
 
         // row - 2
         if (xy[1] + 1 < M) {
             rowBlock = map[xy[0]][xy[1]] + map[xy[0]][xy[1] + 1];
+            for (int r : round) {
+                int buf_i1 = xy[0] + row2Block[r][0];
+                int buf_j1 = xy[1] + row2Block[r][1];
+                int buf_i2 = xy[0] + row2Block[r + 1][0];
+                int buf_j2 = xy[1] + row2Block[r + 1][1];
+                if (buf_i1 < 0 || buf_i1 >= N || buf_j1 < 0 || buf_j1 >= M) continue;
+                if (buf_i2 < 0 || buf_i2 >= N || buf_j2 < 0 || buf_j2 >= M) continue;
 
-            for (int i = 0; i < 3; i++) {
-                int buf_i = xy[0] + row2Block[i][0];
-                int buf_j = xy[1] + row2Block[i][1];
-                if (buf_i < 0 || buf_i >= N || buf_j < 0 || buf_j >= M) continue;
-                int buf_max = map[buf_i][buf_j];
-                buf_i = xy[0] + row2Block[i + 1][0];
-                buf_j = xy[1] + row2Block[i + 1][1];
-                if (buf_i < 0 || buf_i >= N || buf_j < 0 || buf_j >= M) continue;
-                buf_max += map[buf_i][buf_j];
-
-                max = Math.max(max, buf_max);
-            }
-            for (int i = 4; i < 7; i++) {
-                int buf_i = xy[0] + row2Block[i][0];
-                int buf_j = xy[1] + row2Block[i][1];
-                if (buf_i < 0 || buf_i >= N || buf_j < 0 || buf_j >= M) continue;
-                int buf_max = map[buf_i][buf_j];
-                buf_i = xy[0] + row2Block[i + 1][0];
-                buf_j = xy[1] + row2Block[i + 1][1];
-                if (buf_i < 0 || buf_i >= N || buf_j < 0 || buf_j >= M) continue;
-                buf_max += map[buf_i][buf_j];
-
+                int buf_max = map[buf_i1][buf_j1] + map[buf_i2][buf_j2];
                 max = Math.max(max, buf_max);
             }
             result = Math.max(result, rowBlock + max);
@@ -54,29 +41,15 @@ public class Main {
         max = 0;
         if (xy[0] + 1 < N) {
             colBlock = map[xy[0]][xy[1]] + map[xy[0] + 1][xy[1]];
-
-            for (int i = 0; i < 3; i++) {
-                int buf_i = xy[0] + col2Block[i][0];
-                int buf_j = xy[1] + col2Block[i][1];
-                if (buf_i < 0 || buf_i >= N || buf_j < 0 || buf_j >= M) continue;
-                int buf_max = map[buf_i][buf_j];
-                buf_i = xy[0] + col2Block[i + 1][0];
-                buf_j = xy[1] + col2Block[i + 1][1];
-                if (buf_i < 0 || buf_i >= N || buf_j < 0 || buf_j >= M) continue;
-                buf_max += map[buf_i][buf_j];
-
-                max = Math.max(max, buf_max);
-            }
-            for (int i = 4; i < 7; i++) {
-                int buf_i = xy[0] + col2Block[i][0];
-                int buf_j = xy[1] + col2Block[i][1];
-                if (buf_i < 0 || buf_i >= N || buf_j < 0 || buf_j >= M) continue;
-                int buf_max = map[buf_i][buf_j];
-                buf_i = xy[0] + col2Block[i + 1][0];
-                buf_j = xy[1] + col2Block[i + 1][1];
-                if (buf_i < 0 || buf_i >= N || buf_j < 0 || buf_j >= M) continue;
-                buf_max += map[buf_i][buf_j];
-
+            for (int r : round) {
+                int buf_i1 = xy[0] + col2Block[r][0];
+                int buf_j1 = xy[1] + col2Block[r][1];
+                int buf_i2 = xy[0] + col2Block[r + 1][0];
+                int buf_j2 = xy[1] + col2Block[r + 1][1];
+                if (buf_i1 < 0 || buf_i1 >= N || buf_j1 < 0 || buf_j1 >= M) continue;
+                if (buf_i2 < 0 || buf_i2 >= N || buf_j2 < 0 || buf_j2 >= M) continue;
+                
+                int buf_max = map[buf_i1][buf_j1] + map[buf_i2][buf_j2];
                 max = Math.max(max, buf_max);
             }
             result = Math.max(result, colBlock + max);
