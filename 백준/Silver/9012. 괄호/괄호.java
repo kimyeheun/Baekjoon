@@ -1,26 +1,32 @@
+import java.io.*;
 import java.util.*;
 
-public class Main{
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int num = sc.nextInt();
-        
-        for (int u = 0; u < num; u++){
-            String str = sc.next();
-            String[] barcket = str.split("");
-            System.out.println(problem(barcket));
-        }
-        
-    }
-    
-    public static String problem(String[] bk) {
-        Stack <String> block = new Stack<>();
-        for (int i = 0; i < bk.length; i++) {
-            if (bk[i].equals("(")) block.push("(");
-            else if (block.empty()) return "NO";
-            else block.pop();
-        }
-        if (block.empty()) return "YES";
-        else return "NO";
-    }
+
+public class Main {
+	public static void main(String[] args) throws Exception {
+		
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+		
+		for(int n = 0; n < N; n++) {
+			Stack<Byte> stack = new Stack<>();
+			String line = br.readLine();
+			boolean success = true;
+			
+			for(char c : line.toCharArray()) {
+				if (c == '(') stack.add((byte)1);
+				else {
+					if (stack.isEmpty()) {
+						success = false;
+						break;
+					}
+					else stack.pop();
+				}
+			}
+			if (!stack.isEmpty())
+				success = false;
+			System.out.println(success ? "YES" : "NO");
+		}
+	}
 }
+
