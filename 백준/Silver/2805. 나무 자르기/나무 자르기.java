@@ -1,37 +1,47 @@
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
+
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-
-        int N = sc.nextInt();
-        long M = sc.nextLong(); //가져가는 나무의 길이가 M이랑 같거나 커도 됨.
-        long[] tree = new long[N];
-
-        long min = 0;
-        long max = 0;
-
-        for (int n = 0; n < N; n++) {
-            tree[n] = sc.nextInt();
-            if(max < tree[n])
-                max = tree[n];
-        }
-
-        while(min <= max) {
-            long bring = 0;
-            long mid = (min + max) / 2;
-
-            for (int n = 0; n < N; n++) {
-                if(tree[n] - mid > 0)
-                    bring += tree[n] - mid;
+	static int[] trees;
+	static int result = 0;
+	static int N;
+	static int M;
+	
+    static void binarySearch(int s, int e) {
+        while (s <= e) {
+            int nowL = (s + e) / 2;
+            long bufResult = 0;
+            
+            for (int i = 0; i < N; i++) {
+                if (trees[i] > nowL) 
+                    bufResult += trees[i] - nowL;
             }
-
-            if(bring >= M) {
-                min = mid + 1;
-            }
-            else
-                max = mid - 1;
+            if (bufResult >= M) {
+                result = nowL;
+                s = nowL + 1;
+            } 
+            else 
+                e = nowL - 1;
         }
-        System.out.println(max);
     }
+	
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+        
+		N = Integer.parseInt(st.nextToken()); // 나무 개수 
+		M = Integer.parseInt(st.nextToken()); // 가져갈 수 있는 나무의 길이
+		
+		trees = new int[N];
+		st = new StringTokenizer(br.readLine());
+		for(int i = 0; i<N; i++) {
+			trees[i] = Integer.parseInt(st.nextToken());
+		}
+		
+		Arrays.sort(trees);
+		binarySearch(0, trees[N-1]);
+		System.out.println(result);
+		
+	}
 }
