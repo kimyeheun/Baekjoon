@@ -1,35 +1,47 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
+
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String line = br.readLine();
-        StringTokenizer st  =new StringTokenizer(line, "+|-", true);
+	static int result = Integer.MAX_VALUE;
+	
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String line = br.readLine();
+		StringTokenizer lines = new StringTokenizer(line, "\\+|\\-", true);
+		
+		List<Integer> nums = new LinkedList<>();
+		List<Character> calc = new LinkedList<>();
+		
+		nums.add(Integer.parseInt(lines.nextToken()));
+		while(lines.hasMoreTokens()) {
+			calc.add(lines.nextToken().charAt(0));
+			nums.add(Integer.parseInt(lines.nextToken()));
+		}
+		
+		int idx = 0;
+		while (true) {
+			if(!calc.contains('+')) break;
+			if(calc.get(idx) == '+') {
+				int n1 = nums.remove(idx);
+				int n2 = nums.remove(idx);
+				calc.remove(idx);
+				nums.add(idx, n1+n2);
+			}
+			else idx++;
+		}
 
-        int[] minus = new int[line.length()];
-        int j = 0;
-        int fir = Integer.parseInt(st.nextToken());
-
-        while(st.hasMoreTokens()) {
-            String opera = st.nextToken();
-            int sec = Integer.parseInt(st.nextToken());
-            if(opera.equals("+"))
-                fir = fir + sec;
-            if(opera.equals("-")) {
-                minus[j++] = fir;
-                fir = sec;
-            }
-        }
-
-        minus[j] = fir;
-        int sum = minus[0];
-
-        for (int i = 1; i < minus.length; i++) {
-            sum -= minus[i];
-        }
-        System.out.println(sum);
-    }
+		idx = 0;
+		while (true) {
+			if(calc.isEmpty()) break;
+			if(calc.remove(idx) == '-') {
+				int n1 = nums.remove(idx);
+				int n2 = nums.remove(idx);
+				
+				nums.add(idx, n1-n2);
+			}
+		}
+		
+		System.out.println(nums.remove(0)); 
+	}
 }
