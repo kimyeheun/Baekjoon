@@ -12,12 +12,15 @@ public class Main {
             nums[i] = Integer.parseInt(st.nextToken());
         }
         int x = Integer.parseInt(br.readLine());
+        Arrays.sort(nums);
 
         int result = 0;
+        int idx = N-1;
         for(int n = 0; n < N-1; n++) {
-            for(int m = n+1; m < N; m++) {
+            for(int m = idx; m > n; m--) {
                 if (nums[n] + nums[m] == x) {
                     result++;
+                    idx = m;
                     break;
                 }
             }
