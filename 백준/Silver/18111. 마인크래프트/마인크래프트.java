@@ -10,43 +10,47 @@ public class Main {
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
         int B = Integer.parseInt(st.nextToken());
-        
-        int[][] land = new int[N][M];
-        int minH = 256, maxH = 0;
-        
-        for (int i = 0; i < N; i++) {
+
+        int[][] map = new int[N][M];
+
+        int max = 0;
+        int min = Integer.MAX_VALUE;
+        for(int n = 0; n < N; n++) {
             st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < M; j++) {
-                land[i][j] = Integer.parseInt(st.nextToken());
-                minH = Math.min(minH, land[i][j]);
-                maxH = Math.max(maxH, land[i][j]);
+            for(int m = 0; m < M; m++) {
+                map[n][m] = Integer.parseInt(st.nextToken());
+                max = Math.max(max, map[n][m]);
+                min = Math.min(min, map[n][m]);
             }
         }
-        
-        int bestTime = Integer.MAX_VALUE;
-        int bestHeight = -1;
-        
-        for (int h = minH; h <= maxH; h++) {
-            int removeBlocks = 0, addBlocks = 0;
-            
-            for (int i = 0; i < N; i++) {
-                for (int j = 0; j < M; j++) {
-                    int diff = land[i][j] - h;
-                    
-                    if (diff > 0) removeBlocks += diff;
-                    else if (diff < 0) addBlocks -= diff;
+
+        int resultH = -1; // 높이 결과
+        int resultT = Integer.MAX_VALUE; // 시간 결과
+
+        for (int top = min; top <= max; top++) {
+            int time = 0;
+            int block = B; // 인벤토리의 블록 수
+
+            for(int n = 0; n < N; n++) {
+                for(int m = 0; m < M; m++) {
+                    if (map[n][m] > top) {
+                        block += (map[n][m] - top);
+                        time += (map[n][m] - top) * 2;
+                    }
+                    else if (map[n][m] < top){
+                        block -= (top - map[n][m]);
+                        time += (top - map[n][m]);
+                    }
                 }
             }
-            
-            if (removeBlocks + B >= addBlocks) { // 블록이 충분한 경우
-                int time = removeBlocks * 2 + addBlocks;
-                if (time < bestTime || (time == bestTime && h > bestHeight)) {
-                    bestTime = time;
-                    bestHeight = h;
+            if (block >= 0) {
+                if (time < resultT || (time == resultT && top > resultH)) {
+                    resultH = top;
+                    resultT = time;
                 }
             }
         }
-        
-        System.out.println(bestTime + " " + bestHeight);
+
+        System.out.println(resultT + " " + resultH);
     }
 }
