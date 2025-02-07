@@ -24,11 +24,11 @@ public class Main {
             }
         }
 
-        int resultH = -1; // 높이 결과
+        int resultH = 0; // 높이 결과
         int resultT = Integer.MAX_VALUE; // 시간 결과
 
-        for (int top = min; top <= max; top++) {
-            int time = 0;
+        for (int top = min; top <= Math.max(256, max); top++) {
+            int time = 0; // 경과 시간
             int block = B; // 인벤토리의 블록 수
 
             for(int n = 0; n < N; n++) {
@@ -41,8 +41,12 @@ public class Main {
                         block -= (top - map[n][m]);
                         time += (top - map[n][m]);
                     }
+                    // 시간이 넘어감. => 절대 답이 될 수 없음 
+                    if (resultT < time) break;
                 }
+                if (resultT < time) break;
             }
+            // 블록이 부족하지 않은지 확인 
             if (block >= 0) {
                 if (time < resultT || (time == resultT && top > resultH)) {
                     resultH = top;
@@ -54,3 +58,10 @@ public class Main {
         System.out.println(resultT + " " + resultH);
     }
 }
+
+
+/** 
+중단조건으로 'block < 0'을 넣지 않은 이유
+     => 다른 높이에서의 블록이 부족한 블록으로 이동 가능하기 때문에 
+        일단 모든 인덱스 순회 후에 계산 
+**/
