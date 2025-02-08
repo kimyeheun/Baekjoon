@@ -1,45 +1,42 @@
 import java.util.*;
+import java.io.*;
+
 
 public class Main {
-    static int[] hide = new int[100001];
-    static int[] sec = new int[100001];
-    static Queue<Integer> find = new LinkedList<>();
-    static int count;
-    
-    public static void main (String[] args) {
-        Scanner sc = new Scanner(System.in);
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int N = Integer.parseInt(st.nextToken());
+        int K = Integer.parseInt(st.nextToken());
 
-        int start = sc.nextInt();
-        int end = sc.nextInt();
+        if (K <= N) {
+            System.out.println(N - K);
+            return;
+        }
 
-        bfs(start, end);
+        int[] visited = new int[100_001];
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(N);
+        visited[N] = 0;
 
-        System.out.println(sec[end]);
-    }
+        while(!queue.isEmpty()) {
+            int now = queue.poll();
 
-    public static void bfs(int start, int end) {
-        find.add(start);
-        
-        while(!find.isEmpty()) {
-            int length = find.size();
-            int now = find.poll();
-            
-            if (now == end)
-                break;
-
-            if (now - 1 >= 0 && sec[now - 1] == 0) {
-                find.add(now - 1);
-                sec[now-1] = sec[now] + 1;
+            if (now == K) {
+                System.out.println(visited[K]);
+                return;
             }
-            if (now + 1 <= 100000 && sec[now + 1] == 0) {
-                find.add(now + 1);
-                sec[now+1] = sec[now] + 1;
-            }
-            if (now * 2 <= 100000 && sec[now * 2] == 0) {
-                find.add(now * 2);
-                sec[now*2] = sec[now] + 1;
+            int[] nextPositions = {now - 1, now + 1, now * 2};
+
+            for (int next : nextPositions) {
+                if (next >= 0 && next <= 100_000 && visited[next] == 0) {
+                    visited[next] = visited[now] + 1;
+                    queue.add(next);
+                }
             }
         }
+
+        if(visited[N] == 0) System.out.println(-1);
+        else System.out.println(visited[K]);
     }
 }
-
