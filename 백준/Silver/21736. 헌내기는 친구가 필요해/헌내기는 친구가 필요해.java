@@ -10,28 +10,19 @@ public class Main {
     static boolean[][] visited;
     static int result = 0;
 
-    static void bfs(int n, int m) {
-        Stack<int[]> stack = new Stack<>();
-        stack.add(new int[]{n,m});
+    static void dfs(int n, int m) {
+        if(visited[n][m]) return;
 
-        while (!stack.isEmpty()) {
-            int[] now = stack.pop();
-            int nown = now[0];
-            int nowm = now[1];
+        visited[n][m] = true;
+        if (map[n][m] == 'P') result++;
 
-            for(int[] mv : move) {
-                int nextn = nown + mv[0];
-                int nextm = nowm + mv[1];
+        for(int[] mv : move) {
+            int nextn = n + mv[0];
+            int nextm = m + mv[1];
 
-                if(nextn < 0 || nextn >= N || nextm < 0 || nextm >= M)
-                    continue;
-                if (visited[nextn][nextm] || map[nextn][nextm] == 'X')
-                    continue;
-
-                if (map[nextn][nextm] == 'P') result++;
-                stack.add(new int[] {nextn, nextm});
-                visited[nextn][nextm] = true;
-            }
+            if (nextn < 0 || nextn >= N || nextm < 0 || nextm >= M) continue;
+            if (map[nextn][nextm] == 'X') continue;
+            dfs(nextn, nextm);
         }
     }
 
@@ -58,7 +49,7 @@ public class Main {
             }
         }
 
-        bfs(s, e);
+        dfs(s, e);
 
         if (result == 0) System.out.println("TT");
         else System.out.println(result);
