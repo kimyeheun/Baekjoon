@@ -1,61 +1,71 @@
 import java.util.*;
+import java.io.*;
+
 
 public class Main {
     static int N;
-    static int[][] dfsb= new int[1001][1001]; //간선 배열
-    static boolean[] visit; //노드 방문 확인
+    static boolean[][] graph;
+    static boolean[] visited;
+    static StringBuilder sb = new StringBuilder();
 
-    static Queue<Integer> queue = new LinkedList<>();
+    static void dfs(int v) {
+        if (visited[v]) return;
 
-    public static void dfs(int v) {
-        System.out.print(v+" ");
-        visit[v] = true;
+        sb.append(v).append(" ");
+        visited[v] = true;
 
-        int i;
-        for(i = 1; i <=N; i++) {
-            if (!visit[i] && dfsb[v][i] == 1) {
-                dfs(i);
+        for(int idx = 1; idx <= N; idx++) {
+            if (graph[v][idx] && !visited[idx]) {
+                dfs(idx);
             }
         }
     }
 
-    public static void bfs(int v){
-        queue.add(v);
+    static void bfs(int V) {
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(V);
+        visited[V] = false;
 
         while(!queue.isEmpty()) {
             int now = queue.poll();
-            visit[now] = true;
-            System.out.print(now + " ");
+            sb.append(now).append(" ");
 
-            for(int i = 1; i <= N; i++) {
-                if(!visit[i] && dfsb[now][i] == 1) {
-                    queue.add(i);
-                    visit[i] = true;
+            for(int idx = 1; idx <= N; idx++) {
+                if (visited[idx] && graph[now][idx]) {
+                    visited[idx] = false;
+                    queue.add(idx);
                 }
             }
         }
     }
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
 
-        N= sc.nextInt();
-        int M = sc.nextInt();
-        int V = sc.nextInt();
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+        int V = Integer.parseInt(st.nextToken());
 
-        visit = new boolean[N+1];
+        graph = new boolean[N+1][N+1];
+        visited = new boolean[N+1];
 
-        for(int i = 1; i <= M; i++) {
-            int x = sc.nextInt();
-            int y = sc.nextInt();
-            dfsb[x][y] = dfsb[y][x] = 1; //양방향 간선 연결
+        for(int m = 0; m < M; m++) {
+            st = new StringTokenizer(br.readLine());
+            int n1 = Integer.parseInt(st.nextToken());
+            int n2 = Integer.parseInt(st.nextToken());
+
+            graph[n1][n2] = true;
+            graph[n2][n1] = true;
         }
 
+        // dfs
         dfs(V);
 
-        System.out.println();
-        visit = new boolean[N+1];
-
+        sb.append("\n");
+        // bfs
         bfs(V);
+
+        System.out.println(sb);
+
     }
 }
-
