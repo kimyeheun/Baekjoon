@@ -1,34 +1,30 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
-
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String line = br.readLine();
-        StringTokenizer st = new StringTokenizer(line);
-
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
-        long[] card = new long[N];
-
-        line = br.readLine();
-        st  = new StringTokenizer(line);
-        for (int n = 0; n < N; n++) {
-            card[n] = Integer.parseInt(st.nextToken());
+        
+        PriorityQueue<Long> card = new PriorityQueue<>();
+                
+        st = new StringTokenizer(br.readLine());
+        for(int n = 0; n < N; n++) 
+        	card.add(Long.parseLong(st.nextToken()));
+        
+        
+        for(int m = 0; m < M; m++) {
+        	long now = card.remove() + card.remove();
+        	card.add(now);
+        	card.add(now);
         }
-
-        for (int m = 0; m < M; m++) {
-            Arrays.sort(card);
-            card[0] = card[1] = card[0] + card[1];
-        }
-
+        
         long sum = 0;
-        for (int n = 0; n < N; n++) {
-            sum += card[n];
-        }
+        while(!card.isEmpty()) sum += card.remove();
+        
         System.out.println(sum);
     }
 }
