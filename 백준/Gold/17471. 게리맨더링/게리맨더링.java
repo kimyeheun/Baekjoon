@@ -3,92 +3,115 @@ import java.util.*;
 
 public class Main {
     static int N;
-    static int[] population;
-    static List<Integer>[] adjList;
-    static boolean[] selected;
-    static int minDiff = Integer.MAX_VALUE;
+    static int[] peoples;
+    static boolean[][] connected;
+    static int result = Integer.MAX_VALUE;
+
+    static int countPeople(boolean[] nodes) {
+        int cnt1 = 0;
+        int cnt2 = 0;
+
+        for(int i = 1; i <= N; i++) {
+            if (nodes[i]) cnt1 += peoples[i];
+            else cnt2 += peoples[i];
+        }
+        return Math.abs(cnt1 - cnt2);
+    }
+
+    static boolean isConnected(boolean[] nodes, int num) {
+        Queue<Integer> queue = new LinkedList<>();
+        boolean[] visited = new boolean[N+1];
+        int tc = 1;
+        // true 그룹 연결 확인
+        for(int i =1; i <= N; i++) {
+            if (nodes[i]) {
+                queue.add(i);
+                visited[i] = true;
+                break;
+            }
+        }
+        while(!queue.isEmpty()) {
+            int now = queue.poll();
+            for (int i = 1; i <= N; i++) {
+                if(connected[now][i] && !visited[i] && nodes[i]) {
+                    queue.add(i);
+                    visited[i] = true;
+                    tc++;
+                }
+            }
+        }
+
+        // false 그룹 연결 확인
+        int fc = 1;
+        visited = new boolean[N+1];
+        for(int i =1; i <= N; i++) {
+            if (!nodes[i]) {
+                queue.add(i);
+                visited[i] = true;
+                break;
+            }
+        }
+
+        while(!queue.isEmpty()) {
+            int now = queue.poll();
+            for (int i = 1; i <= N; i++) {
+                if(connected[now][i] && !visited[i] && !nodes[i]) {
+                    queue.add(i);
+                    visited[i] = true;
+                    fc++;
+                }
+            }
+        }
+        return (tc == num && fc == (N-num));
+    }
+
+    // num : 특정 구역의 개수 | cnt : 특정 구역의 현재 개수
+    static void Area(int num, int cnt, int idx, boolean[] nodes) {
+        if (num == cnt) {
+            if (isConnected(nodes, num)) {
+                int buf = countPeople(nodes);
+                result = Math.min(buf, result);
+            }
+            return;
+        }
+        if(idx > N) return;
+
+        nodes[idx] = true;
+        Area(num, cnt+1, idx+1, nodes);
+        nodes[idx] = false;
+
+        Area(num, cnt, idx+1, nodes);
+    }
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
-        population = new int[N];
-        adjList = new ArrayList[N];
-        selected = new boolean[N];
+        peoples = new int[N+1];
+        connected = new boolean[N+1][N+1];
 
         StringTokenizer st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < N; i++) {
-            population[i] = Integer.parseInt(st.nextToken());
-            adjList[i] = new ArrayList<>();
+        for(int n = 1; n <= N; n++) {
+            peoples[n] = Integer.parseInt(st.nextToken());
         }
 
-        // 인접 리스트 구성
-        for (int i = 0; i < N; i++) {
+        for(int n = 1; n <= N; n++) {
             st = new StringTokenizer(br.readLine());
-            int count = Integer.parseInt(st.nextToken());
-            for (int j = 0; j < count; j++) {
-                int neighbor = Integer.parseInt(st.nextToken()) - 1;
-                adjList[i].add(neighbor);
+            int nums = Integer.parseInt(st.nextToken());
+            for(int i = 0; i < nums; i++) {
+                int node = Integer.parseInt(st.nextToken());
+                connected[n][node] = true;
+                connected[node][n] = true;
             }
         }
 
-        // 부분 집합을 이용해 두 개의 선거구 나누기
-        subset(0);
-        
-        // 조건에 맞는 선거구를 찾지 못한 경우 -1 출력
-        System.out.println(minDiff == Integer.MAX_VALUE ? -1 : minDiff);
-    }
-
-    // 모든 부분 집합을 만들면서 그룹을 나누는 재귀 함수
-    static void subset(int idx) {
-        if (idx == N) {
-            // 두 개의 그룹이 모두 비어있지 않은지 확인
-            List<Integer> groupA = new ArrayList<>();
-            List<Integer> groupB = new ArrayList<>();
-            for (int i = 0; i < N; i++) {
-                if (selected[i]) groupA.add(i);
-                else groupB.add(i);
-            }
-
-            if (groupA.isEmpty() || groupB.isEmpty()) return;
-
-            // 두 그룹이 각각 연결되어 있는지 확인
-            if (isConnected(groupA) && isConnected(groupB)) {
-                // 인구 차이 계산
-                int sumA = 0, sumB = 0;
-                for (int i : groupA) sumA += population[i];
-                for (int i : groupB) sumB += population[i];
-                minDiff = Math.min(minDiff, Math.abs(sumA - sumB));
-            }
-            return;
+        // 구역 나누기 (조합)
+        for(int i = 1; i < N; i++) {
+            Area(i, 0, 1, new boolean[N+1]);
         }
+        // 구역 연결 확인하기 (bfs)
 
-        // 현재 idx를 그룹 A에 포함
-        selected[idx] = true;
-        subset(idx + 1);
-
-        // 현재 idx를 그룹 B에 포함
-        selected[idx] = false;
-        subset(idx + 1);
-    }
-
-    // BFS를 사용하여 해당 그룹이 연결되어 있는지 확인
-    static boolean isConnected(List<Integer> group) {
-        boolean[] visited = new boolean[N];
-        Queue<Integer> queue = new LinkedList<>();
-        queue.add(group.get(0));
-        visited[group.get(0)] = true;
-
-        int count = 1; // 방문한 노드 수
-        while (!queue.isEmpty()) {
-            int now = queue.poll();
-            for (int next : adjList[now]) {
-                if (!visited[next] && group.contains(next)) {
-                    visited[next] = true;
-                    queue.add(next);
-                    count++;
-                }
-            }
-        }
-        return count == group.size();
+        // 인구 수 최솟값 계산하기
+        if(result == Integer.MAX_VALUE) System.out.println(-1);
+        else System.out.println(result);
     }
 }
