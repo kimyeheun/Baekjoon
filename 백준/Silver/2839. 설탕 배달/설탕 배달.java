@@ -1,5 +1,6 @@
 import java.io.*;
 
+
 public class Main {
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -11,25 +12,11 @@ public class Main {
             return;
         }
 
-        int now = N;
-        int buf = 0;
-        while (now > 7) {
-            now -= 5;
-            buf++;
-            if (now % 3 == 0) {
-                result = Math.min(now / 3 + buf, result);
-            }
+        int n = N / 5;
+        for(int i = n; i >= 1; i--) {
+        	if((N - (5*i)) % 3 == 0) result = Math.min(result, i + (N - (5*i)) / 3);
         }
-
-        now = N;
-        buf = 0;
-        while (now > 7) {
-            now -= 3;
-            buf++;
-            if (now % 5 == 0) {
-                result = Math.min(now / 5 + buf, result);
-            }
-        }
+        
         if (result == Integer.MAX_VALUE)
             System.out.println(-1);
         else System.out.println(result);
