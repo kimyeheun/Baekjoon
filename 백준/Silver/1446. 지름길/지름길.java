@@ -43,7 +43,7 @@ public class Main {
 			set.add(e);
 		}
 
-		for(int i = 0; i < 10_000; i++) {
+		for(int i = 0; i <= D; i++) {
 			dp[i + 1] = Math.min(dp[i+1], dp[i] + 1);
 			
 			for(Node now : list) {
