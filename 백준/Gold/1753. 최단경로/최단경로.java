@@ -1,76 +1,76 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.sql.SQLOutput;
+import java.io.*;
 import java.util.*;
 
 
 public class Main {
-    static boolean[] Vv;            //노드 방문 여부
-    static int[] Dv;                // 가중치 저장
-    static ArrayList<Node>[] array; //Node 자료형을 가진 arrayList로 구성된 배열을 생성한다.
+    static int INF =  Integer.MAX_VALUE;
 
-    public static void main(String[] args) throws IOException{
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int V = Integer.parseInt(st.nextToken()); //정점 개수
-        int E = Integer.parseInt(st.nextToken()); //간선 개수
+    static class Node implements Comparable<Node> {
+        int e;
+        int w;
 
-        Vv = new boolean[V+1];
-        Dv = new int[V+1];
-        array = new ArrayList[V+1];
-
-        int start = Integer.parseInt(br.readLine());
-        Arrays.fill(Dv, Integer.MAX_VALUE);
-
-        for (int i = 1; i <= V; i++) {
-            array[i] = new ArrayList<>();
+        Node(int e, int w) {
+            this.e = e;
+            this.w = w;
         }
 
-        for (int i = 0; i < E; i++) {
-            st = new StringTokenizer(br.readLine());
-            array[Integer.parseInt(st.nextToken())].add(new Node(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
+        @Override
+        public int compareTo(Node node) {
+            return this.w - node.w;
         }
-
-        dijkstra(start);
-
-        for (int i = 1; i <= V; i++) {
-            if(Dv[i] == Integer.MAX_VALUE)
-                System.out.println("INF");
-            else
-                System.out.println(Dv[i]);
-        }
-
     }
 
-    private static void dijkstra(int start) {
-        PriorityQueue<Node> pq = new PriorityQueue<>((o1, o2) -> o1.w - o2.w);
-        Dv[start] = 0;
-        pq.add(new Node(start, 0)); //가중치가 가장 작은 것은 자기 자신으로 돌아올 때.
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int V = Integer.parseInt(st.nextToken()); // 정점 (1~V)
+        int E = Integer.parseInt(st.nextToken()); // 간선 (1~E)
+        int K = Integer.parseInt(br.readLine()); // 시작 정점 번호 (0~V-1)
+
+        // K에서 다른 노드까지의 최단 거리
+        int[] minDist = new int[V+1];
+        Arrays.fill(minDist, INF);
+        minDist[K] = 0;
+
+        // 간선 저장
+        List<Node>[] routes = new ArrayList[V+1];
+        for(int i = 1; i <= V; i++)
+            routes[i] = new ArrayList<>();
+
+        for(int i = 0; i < E; i++) {
+            st = new StringTokenizer(br.readLine());
+            int key = Integer.parseInt(st.nextToken());
+            routes[key].add(new Node(
+                    Integer.parseInt(st.nextToken()),
+                    Integer.parseInt(st.nextToken())));
+        }
+
+        // K번 노드부터 순회
+        PriorityQueue<Node> pq = new PriorityQueue<>();
+        pq.add(new Node(K, 0));
 
         while(!pq.isEmpty()) {
             Node now = pq.poll();
 
-            if(!Vv[now.end])
-                Vv[now.end] = true;
+            if (minDist[now.e] < now.w) continue;
 
-            for(Node next : array[now.end]) {
-                if(!Vv[next.end] && Dv[next.end] > now.w + next.w) {
-                    Dv[next.end] = now.w + next.w;
-                    pq.add(new Node(next.end, Dv[next.end]));
+            for (Node next : routes[now.e]) {
+                int newDist = minDist[now.e] + next.w;
+                if (newDist < minDist[next.e]) {
+                    minDist[next.e] = newDist;
+                    pq.add(new Node(next.e, minDist[now.e] + next.w));
                 }
             }
         }
-    }
 
-    static class Node {
-        int end;    //도착노드
-        int w;      //가중치
-
-        public Node(int end, int w){
-            this.end = end;
-            this.w = w;
+        // minDist 출력
+        StringBuilder sb = new StringBuilder();
+        for(int v = 1; v <= V; v++) {
+            if (minDist[v] == INF) sb.append("INF");
+            else sb.append(minDist[v]);
+            sb.append("\n");
         }
+        System.out.println(sb);
     }
-
 }
