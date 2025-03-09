@@ -1,28 +1,29 @@
 import java.util.*;
+import java.io.*;
 
 public class Main {
-    public static void main(String[] args)  {
-        Scanner sc = new Scanner(System.in);
-        
-        int n = sc.nextInt();
-        int arr[] = new int[n + 1];
-        int dp[] = new int[n + 1];
+    static int N;
+    static int[] nums;
+    static int[] dp;
+    static int result = 0;
 
-        for (int i = 1; i <= n; i++) {
-            arr[i] = sc.nextInt();
-        }
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        N = Integer.parseInt(br.readLine());
+        nums = new int[N];
+        dp = new int[N];
 
-        dp[1] = 1;
-        int ans = 1;
-        for (int i = 2; i <= n; i++) {
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        for(int i = 0; i < N; i++) {
+            nums[i] = Integer.parseInt(st.nextToken());
             dp[i] = 1;
-            for (int j = 1; j < i; j++) {
-                if (arr[i] > arr[j] && dp[i] <= dp[j]) {
-                    dp[i] = dp[j] + 1;
-                }
+            for(int idx = 0; idx < i; idx++) {
+                if(nums[idx] < nums[i])
+                    dp[i] = Math.max(dp[i], dp[idx] + 1);
             }
-            ans = Math.max(ans, dp[i]);
+            result = Math.max(dp[i], result);
         }
-        System.out.println(ans);
+
+        System.out.println(result);
     }
 }
