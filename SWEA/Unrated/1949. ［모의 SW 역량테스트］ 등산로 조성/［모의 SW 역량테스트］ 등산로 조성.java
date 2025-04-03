@@ -13,7 +13,7 @@ public class Solution {
 
     static int result;
 
-    static int findLongestPath(int n, int m, boolean cutUsed) {
+    static int findLongestPath(int n, int m) {
         if (dp[n][m] != -1) return dp[n][m];
 
         int maxPath = 1;
@@ -23,7 +23,7 @@ public class Solution {
 
             if (nextn < 0 || nextm < 0 || nextn >= N || nextm >= N) continue;
             if (map[nextn][nextm] >= map[n][m]) continue; // 내리막길
-            maxPath = Math.max(maxPath, 1 + findLongestPath(nextn, nextm, cutUsed));
+            maxPath = Math.max(maxPath, 1 + findLongestPath(nextn, nextm));
         }
 
         return dp[n][m] = maxPath;
@@ -56,7 +56,7 @@ public class Solution {
             for (int i = 0; i < N; i++) {
                 for (int j = 0; j < N; j++) {
                     if (map[i][j] == max) {
-                        result = Math.max(result, findLongestPath(i, j, false));
+                        result = Math.max(result, findLongestPath(i, j));
                     }
                 }
             }
@@ -74,7 +74,7 @@ public class Solution {
                         for (int x = 0; x < N; x++) {
                             for (int y = 0; y < N; y++) {
                                 if (map[x][y] == max) {
-                                    result = Math.max(result, findLongestPath(x, y, false));
+                                    result = Math.max(result, findLongestPath(x, y));
                                 }
                             }
                         }
