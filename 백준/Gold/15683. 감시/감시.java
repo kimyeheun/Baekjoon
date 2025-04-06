@@ -1,10 +1,14 @@
 import java.util.*;
+import java.io.*;
+
 
 public class Main {
-    static int N, M, minBlindSpot = Integer.MAX_VALUE;
-    static int[][] office;
-    static List<int[]> cctvs = new ArrayList<>();
-    static int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}}; // 우, 하, 좌, 상
+    static int N;
+    static int M;
+    static int result = Integer.MAX_VALUE;
+    static int[][] map;
+    static List<CCTV> cctvs = new ArrayList<>();
+    static int[][] move = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}}; // 우, 하, 좌, 상
     static int[][][] cctvModes = {
             {},
             {{0}, {1}, {2}, {3}},
@@ -14,57 +18,79 @@ public class Main {
             {{0, 1, 2, 3}}
     };
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        N = sc.nextInt();
-        M = sc.nextInt();
-        office = new int[N][M];
+    static class CCTV {
+    	int n;
+    	int m;
+    	int type;
+    	
+    	CCTV(int n, int m, int type) {
+    		this.n = n;
+    		this.m = m;
+    		this.type = type;
+    	}
+    }
+    
+    public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        map = new int[N][M];
 
         for (int i = 0; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
             for (int j = 0; j < M; j++) {
-                office[i][j] = sc.nextInt();
-                if (office[i][j] >= 1 && office[i][j] <= 5) {
-                    cctvs.add(new int[]{i, j, office[i][j]});
+            	map[i][j] = Integer.parseInt(st.nextToken());
+                if (map[i][j] >= 1 && map[i][j] <= 5) {
+                    cctvs.add(new CCTV(i, j, map[i][j]));
                 }
             }
         }
 
-        dfs(0, office);
-        System.out.println(minBlindSpot);
-        sc.close();
+        dfs(0);
+        System.out.println(result);
     }
 
-    static void dfs(int depth, int[][] map) {
+    static void dfs(int depth) {
         if (depth == cctvs.size()) {
-            minBlindSpot = Math.min(minBlindSpot, countBlindSpot(map));
+        	result = Math.min(result, countBlindSpot());
             return;
         }
 
-        int[][] backup = new int[N][M];
-        int[] cctv = cctvs.get(depth);
-        int x = cctv[0], y = cctv[1], type = cctv[2];
+        CCTV cctv = cctvs.get(depth);
 
-        for (int[] mode : cctvModes[type]) {
-            copyMap(map, backup);
-            markArea(map, x, y, mode);
-            dfs(depth + 1, map);
-            copyMap(backup, map);
+        for (int[] mode : cctvModes[cctv.type]) {
+            List<int[]> changed = markArea(cctv.n, cctv.m, mode);
+            dfs(depth + 1);
+            restoreArea(changed);
         }
     }
 
-    static void markArea(int[][] map, int x, int y, int[] mode) {
+    static List<int[]> markArea(int n, int m, int[] mode) {
+        List<int[]> changed = new ArrayList<>();
+
         for (int d : mode) {
-            int nx = x, ny = y;
+            int nx = n, ny = m;
             while (true) {
-                nx += directions[d][0];
-                ny += directions[d][1];
+                nx += move[d][0];
+                ny += move[d][1];
                 if (nx < 0 || ny < 0 || nx >= N || ny >= M || map[nx][ny] == 6) break;
-                if (map[nx][ny] == 0) map[nx][ny] = -1;
+                if (map[nx][ny] == 0) {
+                	map[nx][ny] = -1;
+                    changed.add(new int[]{nx, ny});
+                }
             }
         }
+        return changed;
     }
 
-    static int countBlindSpot(int[][] map) {
+    static void restoreArea(List<int[]> changed) {
+        for (int[] pos : changed) {
+            map[pos[0]][pos[1]] = 0;
+        }
+    }
+
+    static int countBlindSpot() {
         int count = 0;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
@@ -72,11 +98,5 @@ public class Main {
             }
         }
         return count;
-    }
-
-    static void copyMap(int[][] src, int[][] dest) {
-        for (int i = 0; i < N; i++) {
-            System.arraycopy(src[i], 0, dest[i], 0, M);
-        }
     }
 }
